@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImmoBot - Architecture</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #0f172a;
+            padding: 30px;
+            color: #e2e8f0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+        .header h1 { font-size: 1.8rem; font-weight: 700; }
+        .header p { opacity: 0.9; margin-top: 0.4rem; font-size: 0.95rem; }
+
+        /* Flow principal */
+        .main-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Carte phase */
+        .phase {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+        .phase-number {
+            background: #3b82f6;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .phase-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        .phase-file {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            font-family: monospace;
+        }
+
+        /* Composants */
+        .components {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .component {
+            flex: 1;
+            min-width: 200px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            border-left: 3px solid #3b82f6;
+        }
+        .component-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.4rem;
+        }
+        .component-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin-bottom: 0.3rem;
+        }
+        .component-desc {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+        .tech-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 0.6rem;
+        }
+        .tech {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+
+        /* Fleche */
+        .arrow {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #3b82f6;
+            padding: 4px 0;
+        }
+
+        /* Section agent */
+        .agent-section {
+            background: #1e293b;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .agent-badge {
+            position: absolute;
+            top: -12px;
+            left: 24px;
+            background: #3b82f6;
+            color: white;
+            padding: 3px 14px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* Outils grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 1rem;
+        }
+        .tool-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+        .tool-card:hover { border-color: #3b82f6; }
+        .tool-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .tool-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            margin-bottom: 0.3rem;
+        }
+        .tool-desc {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        .tool-source {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #60a5fa;
+            font-family: monospace;
+        }
+
+        /* Flow diagram */
+        .flow-diagram {
+            background: #1e293b;
+            border: 1px dashed #334155;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-top: 20px;
+        }
+        .flow-title {
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #e2e8f0;
+            margin-bottom: 1.2rem;
+        }
+        .flow-steps {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .flow-step {
+            text-align: center;
+            max-width: 120px;
+        }
+        .flow-step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .flow-step-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏠 ImmoBot — Architecture</h1>
+            <p>Agent immobilier IA avec LangGraph, Claude et ChromaDB</p>
+        </div>
+
+        <div class="main-flow">
+            <!-- Phase 1: Ingestion -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-number">1</div>
+                    <div>
+                        <div class="phase-title">Ingestion des donnees</div>
+                        <div class="phase-file">csv_to_markdown.py → ingest.py</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-icon">📄</div>
+                        <div class="component-title">CSV → Markdown</div>
+                        <div class="component-desc">2 820 annonces converties en 2 741 fiches .md + 6 guides + 1 fiche agence</div>
+                        <div class="tech-badges">
+                            <span class="tech">Python CSV</span>
+                            <span class="tech">Pandas</span>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-icon">✂️</div>
+                        <div class="component-title">Decoupage</div>
+                        <div class="component-desc">Chunks de 1 000 caracteres avec chevauchement de 300</div>
+                        <div class="tech-badges">
+                            <span class="tech">RecursiveCharacterTextSplitter</span>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-icon">🔢</div>
+                        <div class="component-title">Vectorisation</div>
+                        <div class="component-desc">Embeddings 384 dimensions via all-MiniLM-L6-v2</div>
+                        <div class="tech-badges">
+                            <span class="tech">HuggingFace</span>
+                            <span class="tech">Sentence Transformers</span>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-icon">💾</div>
+                        <div class="component-title">Stockage</div>
+                        <div class="component-desc">7 633 vecteurs stockes dans ChromaDB</div>
+                        <div class="tech-badges">
+                            <span class="tech">ChromaDB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">⬇</div>
+
+            <!-- Phase 2: Agent -->
+            <div class="agent-section">
+                <div class="agent-badge">AGENT LANGGRAPH</div>
+                <div class="phase-header" style="margin-top: 8px;">
+                    <div class="phase-number">2</div>
+                    <div>
+                        <div class="phase-title">Agent intelligent</div>
+                        <div class="phase-file">agent.py — Claude Sonnet 4.5 decide quel(s) outil(s) utiliser</div>
+                    </div>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">🔍</div>
+                        <div class="tool-name">recherche_rag</div>
+                        <div class="tool-desc">Guides, reglementation, infos agence, descriptions</div>
+                        <div class="tool-source">ChromaDB</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon">🏠</div>
+                        <div class="tool-name">recherche_filtree</div>
+                        <div class="tool-desc">Biens par ville, prix, surface, DPE, equipements</div>
+                        <div class="tool-source">Pandas (CSV)</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon">📋</div>
+                        <div class="tool-name">calcul_frais_notaire</div>
+                        <div class="tool-desc">Calcul exact par tranche, ancien ou neuf</div>
+                        <div class="tool-source">Bareme officiel</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon">💰</div>
+                        <div class="tool-name">simulation_pret</div>
+                        <div class="tool-desc">Mensualites, cout total, taux d'endettement</div>
+                        <div class="tool-source">Amortissement</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">⬇</div>
+
+            <!-- Phase 3: Interface -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-number">3</div>
+                    <div>
+                        <div class="phase-title">Interface utilisateur</div>
+                        <div class="phase-file">app.py</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-icon">💬</div>
+                        <div class="component-title">Chat conversationnel</div>
+                        <div class="component-desc">Interface de chat avec historique et messages formates</div>
+                        <div class="tech-badges">
+                            <span class="tech">Streamlit</span>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-icon">🎨</div>
+                        <div class="component-title">Theme dark personnalise</div>
+                        <div class="component-desc">Palette navy/blue, CSS custom, sidebar avec outils et exemples</div>
+                        <div class="tech-badges">
+                            <span class="tech">CSS</span>
+                            <span class="tech">config.toml</span>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-icon">🔧</div>
+                        <div class="component-title">Outils affiches</div>
+                        <div class="component-desc">Chaque reponse indique quels outils ont ete utilises par l'agent</div>
+                        <div class="tech-badges">
+                            <span class="tech">Transparence IA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flow diagram -->
+        <div class="flow-diagram">
+            <div class="flow-title">Flux d'une question</div>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="flow-step-icon">👤</div>
+                    <div class="flow-step-label">Question utilisateur</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-icon">🤖</div>
+                    <div class="flow-step-label">Agent LangGraph</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-icon">🔧</div>
+                    <div class="flow-step-label">Choix outil(s)</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-icon">⚡</div>
+                    <div class="flow-step-label">Execution</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-icon">🧠</div>
+                    <div class="flow-step-label">Claude synthetise</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-icon">💬</div>
+                    <div class="flow-step-label">Reponse</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
