@@ -6,6 +6,7 @@ ENV/
 .venv/
 
 # Vector Database (generated from ingestion)
+vector_db/
 *.db
 
 # Environment Variables & Secrets

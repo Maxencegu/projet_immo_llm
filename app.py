@@ -1,7 +1,18 @@
+import os
+from pathlib import Path
 import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
+
+# --- Ingest automatique si la base vectorielle n'existe pas ---
+DB_PATH = Path(__file__).parent / "vector_db" / "chroma.sqlite3"
+if not DB_PATH.exists():
+    from src.ingest import fetch_documents, create_chunks, create_embeddings
+    with st.spinner("Première initialisation : création de la base vectorielle..."):
+        documents = fetch_documents()
+        chunks = create_chunks(documents)
+        create_embeddings(chunks)
 
 # --- Configuration de la page ---
 st.set_page_config(

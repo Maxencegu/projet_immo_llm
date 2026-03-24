@@ -32,11 +32,6 @@ Règles :
 - Si tu ne connais pas la réponse, dis-le clairement.
 """
 
-# llm = ChatAnthropic(
-#     temperature=0,
-#     model=MODEL,
-#     anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-# )
 llm = ChatOpenAI(
     model_name="gpt-4o-mini", 
     base_url="https://ai-gateway.liora.tech/",
