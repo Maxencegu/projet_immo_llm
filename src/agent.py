@@ -5,10 +5,11 @@ Agent immobilier LangGraph avec outils.
 import os
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
 
 from src.tools import all_tools
 
-MODEL = "claude-sonnet-4-5-20250929"
+load_dotenv(override=True)
 
 SYSTEM_PROMPT = """
 Tu es ImmoBot, un expert immobilier intelligent spécialisé sur le marché d'Île-de-France.
@@ -30,7 +31,6 @@ Règles :
 - Sois professionnel, chaleureux et pédagogue.
 - Si tu ne connais pas la réponse, dis-le clairement.
 """
-api_key = "sk-vgDIzA7zsqnIg5vFHIahnQ"
 
 # llm = ChatAnthropic(
 #     temperature=0,
@@ -41,7 +41,7 @@ llm = ChatOpenAI(
     model_name="gpt-4o-mini", 
     base_url="https://ai-gateway.liora.tech/",
     temperature=0,
-    api_key=api_key)
+    api_key=os.getenv("OPENAI_API_KEY"))
 
 agent = create_agent(
     model=llm,
